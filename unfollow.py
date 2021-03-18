@@ -14,7 +14,7 @@ browser = webdriver.Firefox()
 
 # Delay timers
 login_delay = 5
-navigation_delay = 3
+navigation_delay = 2
 min_delay = 1    # delay after application
 
 
@@ -70,14 +70,14 @@ def unfollow_accounts(min_cont, username=username):
 	
 	"""
 	print(username)
-	curr_page = 1    # list of followed accounts page number 
+	curr_page = 2    # list of followed accounts page number 
 	curr_url = URL + username + "?tab=following"
 	browser.get(curr_url)
 	time.sleep(navigation_delay)
 	try:
 		while True:
 			
-			curr_url =  f"{URL}{username}?&tab=following" if curr_page == 1 else f"{URL}{username}?page={page}&tab=following"
+			curr_url =  f"{URL}{username}?&tab=following" if curr_page == 1 else f"{URL}{username}?page={curr_page}&tab=following"
 			print("Current url: ", curr_url)
 
 			usernames = get_follower_list(curr_url)
@@ -95,10 +95,11 @@ def unfollow_accounts(min_cont, username=username):
 				browser.get(acc_link)
 				time.sleep(navigation_delay)
 				contributions = (soup.find('h2', {'class': 'f4 text-normal mb-2'}).get_text()).split()[0]
+				contributions = int(contributions.replace(",", ""))
 				# contributions = browser.find_element_by_class_name("f4 text-normal mb-2")
 				print(f"{username} has {contributions} contributions")
 				# unfollow
-				if(int(contributions) < min_cont):
+				if(contributions < min_cont):
 					# unfollow_btn = browser.find_elements_by_xpath("/html/body/div[4]/main/div[2]/div/div[1]/div/div[3]/div[1]/div/div[1]/span/form[2]/input[2]")
 					# unfollow_btn = browser.find_element_by_name("commit")
 					# unfollow_btn = browser.find_element_by_class_name("btn btn-block")
